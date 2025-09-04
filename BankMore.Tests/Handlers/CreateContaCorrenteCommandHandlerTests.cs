@@ -19,7 +19,7 @@ namespace BankMore.Tests.Handlers
             {
                 Nome = "Test User",
                 Senha = "123456",
-                Cpf = "47355309026"
+                Cpf = "19930909087"
             };
 
             var result = await handler.Handle(command, CancellationToken.None);
