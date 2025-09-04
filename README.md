@@ -22,7 +22,7 @@ O projeto passou por várias melhorias para garantir o funcionamento adequado em
 
 - **.NET 8:** O framework principal para a construção dos microsserviços.
 - **C#:** A linguagem de programação primária.
-- **Ocelot:** API Gateway para .NET.
+
 - **Domain-Driven Design (DDD):** Abordagem arquitetural para modelar o software com base no domínio.
 - **Command Query Responsibility Segregation (CQRS):** Padrão para separar operações de leitura e escrita.
 - **MediatR:** Biblioteca para implementar o padrão Mediator, facilitando o CQRS.
@@ -42,7 +42,7 @@ A solução é composta pelos seguintes projetos:
 - `BankMore.Infra`: Implementa as preocupações de infraestrutura, como implementações de repositório usando Dapper e SQLite.
 - `BankMore.API.ContaCorrente`: Web API ASP.NET Core para operações relacionadas à conta (ex: criar conta, login, depósito, saque, consultar saldo).
 - `BankMore.API.Transferencia`: Web API ASP.NET Core para operações de transferência.
-- `BankMore.API.Gateway`: API Gateway usando Ocelot para rotear as requisições para os microsserviços.
+
 - `BankMore.Tests`: Projeto de testes unitários para a lógica central.
 
 ## Arquitetura do Sistema
@@ -51,27 +51,7 @@ A solução é composta pelos seguintes projetos:
 
 O sistema BankMore segue uma arquitetura de microsserviços, onde cada serviço é responsável por um domínio específico do negócio:
 
-```
-┌─────────────┐
-│    Cliente  │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐     ┌───────────────────┐     ┌───────────────────┐
-│  API Gateway │────▶│ API ContaCorrente │────▶│ Banco de Dados    │
-│   (Ocelot)   │     └───────────────────┘     │     SQLite        │
-└──────┬──────┘                                │  (Volume Docker   │
-       │           ┌───────────────────┐       │   Compartilhado)  │
-       └──────────▶│ API Transferencia │──────▶│                   │
-                   └───────────────────┘       └───────────────────┘
-```
 
-### Fluxo de Dados
-
-1. O cliente faz requisições para o API Gateway (porta 5000)
-2. O Gateway roteia as requisições para o serviço apropriado com base no caminho da URL
-3. Os serviços processam as requisições e acessam o banco de dados SQLite compartilhado
-4. Os serviços retornam as respostas que são encaminhadas de volta ao cliente pelo Gateway
 
 ### Padrões Implementados
 
@@ -102,25 +82,15 @@ O sistema BankMore segue uma arquitetura de microsserviços, onde cada serviço 
     ```
 
     Este comando irá:
-    - Construir as imagens Docker para `BankMore.API.ContaCorrente`, `BankMore.API.Transferencia` e `BankMore.API.Gateway`.
+    - Construir as imagens Docker para `BankMore.API.ContaCorrente` e `BankMore.API.Transferencia`.
     - Iniciar os contêineres com as configurações necessárias.
     - Configurar o volume compartilhado `db-data` para o banco de dados SQLite.
     - Definir as variáveis de ambiente para conexão com o banco de dados e chave JWT.
 
-3.  **Acesse as APIs através do Gateway:**
+3.  **Acesse as APIs diretamente:**
 
-    O API Gateway está configurado para rodar em `http://localhost:5000`.
-
-    - **API ContaCorrente:** `http://localhost:5000/contacorrente/{endpoint}`
-    - **API Transferencia:** `http://localhost:5000/transferencia/{endpoint}`
-
-    Por exemplo, para acessar o endpoint de criação de conta, a URL seria `http://localhost:5000/contacorrente/api/ContaCorrente`.
-
-    **Acesso ao Swagger:**
-    
     Após a execução do docker-compose, você pode acessar a documentação Swagger de cada serviço:
     
-    - **API Gateway:** `http://localhost:5000/swagger`
     - **API ContaCorrente:** `http://localhost:5074/swagger`
     - **API Transferencia:** `http://localhost:5237/swagger`
     
@@ -156,11 +126,7 @@ O sistema BankMore segue uma arquitetura de microsserviços, onde cada serviço 
     dotnet run --project BankMore.API.Transferencia
     ```
 
-4.  **Execute o API Gateway (em um terminal separado):**
 
-    ```bash
-    dotnet run --project BankMore.API.Gateway
-    ```
 
 ## Executando Testes
 
@@ -185,7 +151,7 @@ As seguintes variáveis de ambiente são configuradas no `docker-compose.yaml`:
 
 ### Políticas CORS
 
-Todos os serviços (ContaCorrente, Transferencia e Gateway) foram configurados com políticas CORS permissivas para facilitar o desenvolvimento e testes. Em um ambiente de produção, estas políticas devem ser restringidas para origens específicas.
+Todos os serviços (ContaCorrente e Transferencia) foram configurados com políticas CORS permissivas para facilitar o desenvolvimento e testes. Em um ambiente de produção, estas políticas devem ser restringidas para origens específicas.
 
 ### Configuração do Swagger
 
@@ -201,59 +167,7 @@ O arquivo `test-api.ps1` contém um script PowerShell que demonstra o fluxo comp
 4. Criação de uma segunda conta
 5. Transferência entre contas
 
-## Endpoints da API (Exemplos via Gateway)
 
-### ContaCorrente
-
-- **Criar Conta**: `POST http://localhost:5000/contacorrente`
-  ```json
-  {
-    "nome": "Nome do Cliente",
-    "senha": "senha123"
-  }
-  ```
-
-- **Login**: `POST http://localhost:5000/contacorrente/login`
-  ```json
-  {
-    "numero": "123456",
-    "senha": "senha123"
-  }
-  ```
-
-- **Movimentação (Depósito/Saque)**: `POST http://localhost:5000/contacorrente/movimentacao`
-  ```json
-  {
-    "idRequisicao": "guid-unico",
-    "valor": 1000,
-    "tipoMovimento": "C"  // C para crédito (depósito), D para débito (saque)
-  }
-  ```
-
-### Transferencia
-
-- **Realizar Transferência**: `POST http://localhost:5000/transferencia`
-  ```json
-  {
-    "idRequisicao": "guid-unico",
-    "numeroConta": "654321",  // Número da conta de destino
-    "valor": 500
-  }
-  ```
-
-> **Nota**: Para os endpoints que exigem autenticação, é necessário incluir o token JWT no cabeçalho da requisição: `Authorization: Bearer {token}`
-
-### API ContaCorrente
-
-- `POST /contacorrente/api/ContaCorrente`: Cria uma nova conta bancária.
-- `POST /contacorrente/api/ContaCorrente/login`: Autentica e obtém um token JWT.
-- `PUT /contacorrente/api/ContaCorrente/inativar`: Desativa uma conta (requer autenticação).
-- `POST /contacorrente/api/ContaCorrente/movimentacao`: Realiza um depósito ou saque (requer autenticação).
-- `GET /contacorrente/api/ContaCorrente/saldo`: Obtém o saldo da conta (requer autenticação).
-
-### API Transferencia
-
-- `POST /transferencia/api/Transferencia`: Realiza uma transferência entre contas (requer autenticação).
 
 ## Melhorias Futuras (Baseado nos Requisitos do PDF)
 

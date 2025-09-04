@@ -1,6 +1,7 @@
 Write-Host "Criando conta corrente..."
 $createAccountBody = @{
     nome = "Teste Usuario"
+    cpf = "59742792046"
     senha = "senha123"
 } | ConvertTo-Json
 
@@ -38,6 +39,7 @@ Write-Host "Depósito realizado com sucesso!"
 Write-Host "\nCriando segunda conta corrente..."
 $createAccount2Body = @{
     nome = "Destinatario Teste"
+    cpf = "55678144022"
     senha = "senha456"
 } | ConvertTo-Json
 

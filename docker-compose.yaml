@@ -41,8 +41,6 @@ services:
       - postgres
       - contacorrente.api
 
-  
-
 volumes:
   postgres_data:
-
+ 
