@@ -1,7 +1,8 @@
 using BankMore.Core.Entities;
 using BankMore.Core.Interfaces;
 using Dapper;
-using Microsoft.Data.Sqlite;
+using Npgsql;
+
 using System;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace BankMore.Infra.Repositories
 
         public async Task<ContaCorrente> GetById(Guid id)
         {
-            using (var connection = new SqliteConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 return (await connection.QueryFirstOrDefaultAsync<ContaCorrente>("SELECT * FROM ContaCorrente WHERE Id = @id", new { id }))!;
             }
@@ -26,7 +27,7 @@ namespace BankMore.Infra.Repositories
 
         public async Task<ContaCorrente> GetByNumero(int numero)
         {
-            using (var connection = new SqliteConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 return (await connection.QueryFirstOrDefaultAsync<ContaCorrente>("SELECT * FROM ContaCorrente WHERE Numero = @numero", new { numero }))!;
             }
@@ -34,7 +35,7 @@ namespace BankMore.Infra.Repositories
 
         public async Task Add(ContaCorrente contaCorrente)
         {
-            using (var connection = new SqliteConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.ExecuteAsync("INSERT INTO ContaCorrente (Id, Numero, Nome, Ativo, Senha, Salt, Saldo) VALUES (@Id, @Numero, @Nome, @Ativo, @Senha, @Salt, @Saldo)", contaCorrente);
             }
@@ -42,7 +43,7 @@ namespace BankMore.Infra.Repositories
 
         public async Task Update(ContaCorrente contaCorrente)
         {
-            using (var connection = new SqliteConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.ExecuteAsync("UPDATE ContaCorrente SET Nome = @Nome, Ativo = @Ativo, Senha = @Senha, Salt = @Salt, Saldo = @Saldo WHERE Id = @Id", contaCorrente);
             }

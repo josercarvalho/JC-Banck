@@ -1,7 +1,10 @@
 
+using BankMore.Core.Commands.Validators;
 using BankMore.Core.Interfaces;
 using BankMore.Infra.Database;
 using BankMore.Infra.Repositories;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -25,6 +28,10 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
+
+//builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssembly(Assembly.Load("BankMore.Core")));
+builder.Services.AddValidatorsFromAssemblyContaining<CreateTransferenciaCommandValidator>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

@@ -1,6 +1,6 @@
 
 using Dapper;
-using Microsoft.Data.Sqlite;
+using Npgsql;
 
 namespace BankMore.Infra.Database
 {
@@ -15,25 +15,14 @@ namespace BankMore.Infra.Database
 
         public void Setup()
         {
-            var connectionStringParts = _connectionString.Split('=');
-            if (connectionStringParts.Length > 1)
-            {
-                var dbPath = connectionStringParts[1].Trim();
-                var dbDir = System.IO.Path.GetDirectoryName(dbPath);
-                if (!string.IsNullOrEmpty(dbDir) && !System.IO.Directory.Exists(dbDir))
-                {
-                    System.IO.Directory.CreateDirectory(dbDir);
-                }
-            }
-
-            using (var connection = new SqliteConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
 
-                connection.Execute("CREATE TABLE IF NOT EXISTS ContaCorrente (Id TEXT PRIMARY KEY, Numero INTEGER, Nome TEXT, Ativo INTEGER, Senha TEXT, Salt TEXT, Saldo REAL)");
-                connection.Execute("CREATE TABLE IF NOT EXISTS Movimento (Id TEXT PRIMARY KEY, IdContaCorrente TEXT, DataMovimento TEXT, TipoMovimento TEXT, Valor REAL)");
-                connection.Execute("CREATE TABLE IF NOT EXISTS Transferencia (Id TEXT PRIMARY KEY, IdContaCorrenteOrigem TEXT, IdContaCorrenteDestino TEXT, DataTransferencia TEXT, Valor REAL)");
-                connection.Execute("CREATE TABLE IF NOT EXISTS Idempotencia (ChaveIdempotencia TEXT PRIMARY KEY, Requisicao TEXT, Resultado TEXT)");
+                connection.Execute("CREATE TABLE IF NOT EXISTS ContaCorrente (Id UUID PRIMARY KEY, Numero INT, Nome VARCHAR(100), Ativo BOOLEAN, Senha TEXT, Salt TEXT, Saldo DECIMAL(18, 2))");
+                connection.Execute("CREATE TABLE IF NOT EXISTS Movimento (Id UUID PRIMARY KEY, IdContaCorrente UUID, DataMovimento TIMESTAMP, TipoMovimento VARCHAR(1), Valor DECIMAL(18, 2))");
+                connection.Execute("CREATE TABLE IF NOT EXISTS Transferencia (Id UUID PRIMARY KEY, IdContaCorrenteOrigem UUID, IdContaCorrenteDestino UUID, DataTransferencia TIMESTAMP, Valor DECIMAL(18, 2))");
+                connection.Execute("CREATE TABLE IF NOT EXISTS Idempotencia (ChaveIdempotencia UUID PRIMARY KEY, Requisicao TEXT, Resultado TEXT)");
             }
         }
     }

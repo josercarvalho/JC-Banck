@@ -1,7 +1,7 @@
 using BankMore.Core.Entities;
 using BankMore.Core.Interfaces;
 using Dapper;
-using Microsoft.Data.Sqlite;
+using Npgsql;
 using System;
 using System.Threading.Tasks;
 
@@ -18,7 +18,7 @@ namespace BankMore.Infra.Repositories
 
         public async Task<Idempotencia> GetById(Guid chaveIdempotencia)
         {
-            using (var connection = new SqliteConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 return (await connection.QueryFirstOrDefaultAsync<Idempotencia>("SELECT * FROM Idempotencia WHERE ChaveIdempotencia = @chaveIdempotencia", new { chaveIdempotencia }))!;
             }
@@ -26,7 +26,7 @@ namespace BankMore.Infra.Repositories
 
         public async Task Add(Idempotencia idempotencia)
         {
-            using (var connection = new SqliteConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.ExecuteAsync("INSERT INTO Idempotencia (ChaveIdempotencia, Requisicao, Resultado) VALUES (@ChaveIdempotencia, @Requisicao, @Resultado)", idempotencia);
             }

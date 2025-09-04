@@ -2,7 +2,7 @@
 using BankMore.Core.Entities;
 using BankMore.Core.Interfaces;
 using Dapper;
-using Microsoft.Data.Sqlite;
+using Npgsql;
 using System.Threading.Tasks;
 
 namespace BankMore.Infra.Repositories
@@ -18,7 +18,7 @@ namespace BankMore.Infra.Repositories
 
         public async Task Add(Movimento movimento)
         {
-            using (var connection = new SqliteConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 await connection.ExecuteAsync("INSERT INTO Movimento (Id, IdContaCorrente, DataMovimento, TipoMovimento, Valor) VALUES (@Id, @IdContaCorrente, @DataMovimento, @TipoMovimento, @Valor)", movimento);
             }

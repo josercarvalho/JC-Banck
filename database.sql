@@ -1,36 +1,42 @@
-
--- Table: ContaCorrente
 CREATE TABLE IF NOT EXISTS ContaCorrente (
-    Id TEXT PRIMARY KEY,
-    Numero INTEGER,
-    Nome TEXT,
-    Ativo INTEGER,
+    Id UUID PRIMARY KEY,
+    Numero INT,
+    Nome VARCHAR(100),
+    Ativo BOOLEAN,
     Senha TEXT,
     Salt TEXT,
-    Saldo REAL
+    Saldo DECIMAL(18, 2)
 );
 
--- Table: Movimento
 CREATE TABLE IF NOT EXISTS Movimento (
-    Id TEXT PRIMARY KEY,
-    IdContaCorrente TEXT,
-    DataMovimento TEXT,
-    TipoMovimento TEXT,
-    Valor REAL
+    Id UUID PRIMARY KEY,
+    IdContaCorrente UUID,
+    DataMovimento TIMESTAMP,
+    TipoMovimento VARCHAR(1),
+    Valor DECIMAL(18, 2),
+    FOREIGN KEY(IdContaCorrente) REFERENCES ContaCorrente(Id)
 );
 
--- Table: Transferencia
 CREATE TABLE IF NOT EXISTS Transferencia (
-    Id TEXT PRIMARY KEY,
-    IdContaCorrenteOrigem TEXT,
-    IdContaCorrenteDestino TEXT,
-    DataTransferencia TEXT,
-    Valor REAL
+    Id UUID PRIMARY KEY,
+    IdContaCorrenteOrigem UUID,
+    IdContaCorrenteDestino UUID,
+    DataTransferencia TIMESTAMP,
+    Valor DECIMAL(18, 2),
+    FOREIGN KEY(IdContaCorrenteOrigem) REFERENCES ContaCorrente(Id),
+    FOREIGN KEY(IdContaCorrenteDestino) REFERENCES ContaCorrente(Id)
 );
 
--- Table: Idempotencia
 CREATE TABLE IF NOT EXISTS Idempotencia (
-    ChaveIdempotencia TEXT PRIMARY KEY,
+    ChaveIdempotencia UUID PRIMARY KEY,
     Requisicao TEXT,
     Resultado TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Tarifa (
+    IdTarifa UUID PRIMARY KEY,
+    IdContaCorrente UUID,
+    DataMovimento TIMESTAMP,
+    Valor DECIMAL(18, 2),
+    FOREIGN KEY(IdContaCorrente) REFERENCES ContaCorrente(Id)
 );

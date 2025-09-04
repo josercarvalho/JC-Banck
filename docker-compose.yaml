@@ -2,11 +2,16 @@
 version: '3.4'
 
 services:
-  db-volume:
-    image: busybox
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=bankmore
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
     volumes:
-      - db-data:/data
-    command: /bin/true
+      - postgres_data:/var/lib/postgresql/data
 
   contacorrente.api:
     image: ${DOCKER_REGISTRY-}contacorrenteapi
@@ -15,13 +20,11 @@ services:
       dockerfile: BankMore.API.ContaCorrente/Dockerfile
     ports:
       - "5074:8080"
-    volumes:
-      - db-data:/app/data
     environment:
-      - ConnectionString=Data Source=/app/data/bankmore.db
+      - ConnectionString=Host=postgres;Port=5432;Database=bankmore;Username=user;Password=password
       - JWT_KEY=bankmore-secure-jwt-key-for-production
     depends_on:
-      - db-volume
+      - postgres
 
   transferencia.api:
     image: ${DOCKER_REGISTRY-}transferenciaapi
@@ -30,13 +33,11 @@ services:
       dockerfile: BankMore.API.Transferencia/Dockerfile
     ports:
       - "5237:8080"
-    volumes:
-      - db-data:/app/data
     environment:
-      - ConnectionString=Data Source=/app/data/bankmore.db
+      - ConnectionString=Host=postgres;Port=5432;Database=bankmore;Username=user;Password=password
       - JWT_KEY=bankmore-secure-jwt-key-for-production
     depends_on:
-      - db-volume
+      - postgres
       - contacorrente.api
 
   gateway.api:
@@ -51,5 +52,5 @@ services:
       - transferencia.api
 
 volumes:
-  db-data:
+  postgres_data:
 

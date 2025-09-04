@@ -1,11 +1,11 @@
 
-using System;
+using BankMore.Core.Entities.Abstractions;
+using BankMore.Core.Entities.Validators;
 
 namespace BankMore.Core.Entities
 {
-    public class ContaCorrente
+    public class ContaCorrente : Entity
     {
-        public Guid Id { get; private set; }
         public int Numero { get; private set; }
         public string Nome { get; private set; }
         public bool Ativo { get; private set; }
@@ -15,7 +15,6 @@ namespace BankMore.Core.Entities
 
         public ContaCorrente(string nome, string senha, string salt)
         {
-            Id = Guid.NewGuid();
             Numero = new Random().Next(10000, 99999);
             Nome = nome;
             Ativo = true;
@@ -46,6 +45,12 @@ namespace BankMore.Core.Entities
                 throw new ArgumentException("O valor do crédito deve ser positivo.");
 
             Saldo += valor;
+        }
+
+        public override bool Validate()
+        {
+            ValidationResult = new ContaCorrenteValidator().Validate(this);
+            return IsValid;
         }
     }
 }
