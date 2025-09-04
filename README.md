@@ -264,3 +264,7 @@ O arquivo `test-api.ps1` contém um script PowerShell que demonstra o fluxo comp
 - **Melhorias de Segurança:** Implementar hash de senha adequado, gerenciamento de chave JWT mais seguro e outras melhores práticas de segurança.
 - **Migração de Banco de Dados:** Implementar migrações de banco de dados para SQLite (e potencialmente Oracle para produção).
 - **Orquestração de Contêineres:** Configurar ainda mais a implantação do Kubernetes para ambientes de produção.
+
+## Autor 👦
+
+* **José Carvalho** - *Desenvolvedor* - [GitHub](https://github.com/josercarvalho) - [Linkedin](https://www.linkedin.com/in/josercarvalho)
