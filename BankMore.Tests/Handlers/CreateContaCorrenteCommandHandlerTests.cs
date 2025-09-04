@@ -14,7 +14,10 @@ namespace BankMore.Tests.Handlers
         public async Task Handle_ValidCpf_ShouldCreateContaCorrente()
         {
             var contaCorrenteRepositoryMock = new Mock<IContaCorrenteRepository>();
-            var handler = new CreateContaCorrenteCommandHandler(contaCorrenteRepositoryMock.Object);
+            var passwordHasherMock = new Mock<IPasswordHasher>();
+            passwordHasherMock.Setup(ph => ph.GenerateSalt()).Returns("test_salt");
+            passwordHasherMock.Setup(ph => ph.HashPassword(It.IsAny<string>(), It.IsAny<string>())).Returns((string password, string salt) => password + salt);
+            var handler = new CreateContaCorrenteCommandHandler(contaCorrenteRepositoryMock.Object, passwordHasherMock.Object);
             var command = new CreateContaCorrenteCommand
             {
                 Nome = "Test User",
@@ -32,7 +35,10 @@ namespace BankMore.Tests.Handlers
         public async Task Handle_InvalidCpf_ShouldThrowArgumentException()
         {
             var contaCorrenteRepositoryMock = new Mock<IContaCorrenteRepository>();
-            var handler = new CreateContaCorrenteCommandHandler(contaCorrenteRepositoryMock.Object);
+            var passwordHasherMock = new Mock<IPasswordHasher>();
+            passwordHasherMock.Setup(ph => ph.GenerateSalt()).Returns("test_salt");
+            passwordHasherMock.Setup(ph => ph.HashPassword(It.IsAny<string>(), It.IsAny<string>())).Returns((string password, string salt) => password + salt);
+            var handler = new CreateContaCorrenteCommandHandler(contaCorrenteRepositoryMock.Object, passwordHasherMock.Object);
             var command = new CreateContaCorrenteCommand
             {
                 Nome = "Test User",
@@ -48,7 +54,10 @@ namespace BankMore.Tests.Handlers
         public async Task Handle_AllEqualDigitsCpf_ShouldThrowArgumentException()
         {
             var contaCorrenteRepositoryMock = new Mock<IContaCorrenteRepository>();
-            var handler = new CreateContaCorrenteCommandHandler(contaCorrenteRepositoryMock.Object);
+            var passwordHasherMock = new Mock<IPasswordHasher>();
+            passwordHasherMock.Setup(ph => ph.GenerateSalt()).Returns("test_salt");
+            passwordHasherMock.Setup(ph => ph.HashPassword(It.IsAny<string>(), It.IsAny<string>())).Returns((string password, string salt) => password + salt);
+            var handler = new CreateContaCorrenteCommandHandler(contaCorrenteRepositoryMock.Object, passwordHasherMock.Object);
             var command = new CreateContaCorrenteCommand
             {
                 Nome = "Test User",

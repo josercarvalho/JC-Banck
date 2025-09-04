@@ -41,16 +41,7 @@ services:
       - postgres
       - contacorrente.api
 
-  gateway.api:
-    image: ${DOCKER_REGISTRY-}gatewayapi
-    build:
-      context: .
-      dockerfile: BankMore.API.Gateway/Dockerfile
-    ports:
-      - "5000:8080"
-    depends_on:
-      - contacorrente.api
-      - transferencia.api
+  
 
 volumes:
   postgres_data:

@@ -17,11 +17,13 @@ namespace BankMore.Tests.Handlers
         public async Task Handle_ValidCredentials_ShouldReturnToken()
         {
             var contaCorrenteRepositoryMock = new Mock<IContaCorrenteRepository>();
-            var contaCorrente = new ContaCorrente("Test User", "password123", "salt");
+            var passwordHasherMock = new Mock<IPasswordHasher>();
+            passwordHasherMock.Setup(ph => ph.VerifyPassword(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(true);
+            var contaCorrente = new ContaCorrente("Test User", "password123", "salt", "test_salt");
             contaCorrenteRepositoryMock.Setup(r => r.GetByNumero(It.IsAny<int>()))
                 .ReturnsAsync(contaCorrente);
 
-            var handler = new LoginCommandHandler(contaCorrenteRepositoryMock.Object);
+            var handler = new LoginCommandHandler(contaCorrenteRepositoryMock.Object, passwordHasherMock.Object);
             var command = new LoginCommand
             {
                 NumeroConta = contaCorrente.Numero,
@@ -37,10 +39,12 @@ namespace BankMore.Tests.Handlers
         public async Task Handle_InvalidCredentials_ShouldThrowUnauthorizedAccessException()
         {
             var contaCorrenteRepositoryMock = new Mock<IContaCorrenteRepository>();
+            var passwordHasherMock = new Mock<IPasswordHasher>();
+            passwordHasherMock.Setup(ph => ph.VerifyPassword(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(true);
             contaCorrenteRepositoryMock.Setup(r => r.GetByNumero(It.IsAny<int>()))
                 .ReturnsAsync((ContaCorrente)null);
 
-            var handler = new LoginCommandHandler(contaCorrenteRepositoryMock.Object);
+            var handler = new LoginCommandHandler(contaCorrenteRepositoryMock.Object, passwordHasherMock.Object);
             var command = new LoginCommand
             {
                 NumeroConta = 12345,
@@ -54,11 +58,13 @@ namespace BankMore.Tests.Handlers
         public async Task Handle_InvalidPassword_ShouldThrowUnauthorizedAccessException()
         {
             var contaCorrenteRepositoryMock = new Mock<IContaCorrenteRepository>();
-            var contaCorrente = new ContaCorrente("Test User", "password123", "salt");
+            var passwordHasherMock = new Mock<IPasswordHasher>();
+            passwordHasherMock.Setup(ph => ph.VerifyPassword(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(false);
+            var contaCorrente = new ContaCorrente("Test User", "password123", "salt", "test_salt");
             contaCorrenteRepositoryMock.Setup(r => r.GetByNumero(It.IsAny<int>()))
                 .ReturnsAsync(contaCorrente);
 
-            var handler = new LoginCommandHandler(contaCorrenteRepositoryMock.Object);
+            var handler = new LoginCommandHandler(contaCorrenteRepositoryMock.Object, passwordHasherMock.Object);
             var command = new LoginCommand
             {
                 NumeroConta = contaCorrente.Numero,

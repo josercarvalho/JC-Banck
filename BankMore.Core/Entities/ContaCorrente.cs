@@ -1,4 +1,6 @@
 
+using System.Security.Cryptography;
+using System.Text;
 using BankMore.Core.Entities.Abstractions;
 using BankMore.Core.Entities.Validators;
 
@@ -13,6 +15,9 @@ namespace BankMore.Core.Entities
         public string Senha { get; private set; }
         public string Salt { get; private set; }
         public decimal Saldo { get; private set; }
+        public DateTime DataCriacao { get; private set; }
+        public DateTime DataAtualizacao { get; private set; }
+
 
         public ContaCorrente(string nome, string cpf, string senha, string salt)
         {
@@ -23,6 +28,9 @@ namespace BankMore.Core.Entities
             Senha = senha;
             Salt = salt;
             Saldo = 0;
+            DataCriacao = DateTime.UtcNow;
+            DataAtualizacao = DateTime.UtcNow;
+            Validate();
         }
 
         public void Inativar()
@@ -54,5 +62,6 @@ namespace BankMore.Core.Entities
             ValidationResult = new ContaCorrenteValidator().Validate(this);
             return IsValid;
         }
+        
     }
 }

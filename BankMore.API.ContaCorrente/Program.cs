@@ -39,6 +39,9 @@ builder.Services.AddSingleton<DatabaseBootstrap>(new DatabaseBootstrap(connectio
 builder.Services.AddSingleton<IContaCorrenteRepository>(new ContaCorrenteRepository(connectionString));
 builder.Services.AddSingleton<IMovimentoRepository>(new MovimentoRepository(connectionString));
 builder.Services.AddSingleton<IIdempotenciaRepository>(new IdempotenciaRepository(connectionString));
+builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+builder.Services.AddSingleton<ITransferenciaRepository>(new TransferenciaRepository(connectionString));
+
 
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? "123as4d56asd45ads465a4s5d6";
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

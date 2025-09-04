@@ -89,5 +89,21 @@ namespace BankMore.API.ContaCorrente.Controllers
                 return BadRequest(new { message = ex.Message, type = "INVALID_DATA" });
             }
         }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetAll([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 25)
+        {
+            try
+            {
+                var query = new GetAllContaCorrenteQuery(pageNumber, pageSize);
+                var contasCorrentes = await _mediator.Send(query);
+                return Ok(contasCorrentes);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message, type = "ERROR_FETCHING_ACCOUNTS" });
+            }
+        }
     }
 }

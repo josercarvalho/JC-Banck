@@ -3,22 +3,21 @@ using BankMore.Core.Entities;
 using BankMore.Core.Interfaces;
 using MediatR;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BankMore.Core.Handlers
 {
     public class LoginCommandHandler : IRequestHandler<LoginCommand, string>
     {
         private readonly IContaCorrenteRepository _contaCorrenteRepository;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public LoginCommandHandler(IContaCorrenteRepository contaCorrenteRepository)
+        public LoginCommandHandler(IContaCorrenteRepository contaCorrenteRepository, IPasswordHasher passwordHasher)
         {
             _contaCorrenteRepository = contaCorrenteRepository;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<string> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -37,14 +36,20 @@ namespace BankMore.Core.Handlers
             {
                 throw new ArgumentException("Número da conta ou CPF devem ser informados.");
             }
+            
+            if (contaCorrente == null || !contaCorrente.Ativo)
+            {
+                throw new System.UnauthorizedAccessException("Usuário ou senha inválidos.");
+            }
 
-            if (contaCorrente == null || contaCorrente.Senha != request.Senha)
+            var isPasswordValid = _passwordHasher.VerifyPassword(request.Senha, contaCorrente.Senha, contaCorrente.Salt);
+            if (!isPasswordValid)
             {
                 throw new System.UnauthorizedAccessException("Usuário ou senha inválidos.");
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? "123as4d56asd45ads465a4s5d6";
+            var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? "thisisalongsecretkeyforjwttokengeneration";
             var key = Encoding.ASCII.GetBytes(jwtKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {

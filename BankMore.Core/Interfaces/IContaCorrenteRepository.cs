@@ -12,6 +12,7 @@ namespace BankMore.Core.Interfaces
         Task<ContaCorrente> GetByCpf(string cpf);
         Task Add(ContaCorrente contaCorrente);
         Task Update(ContaCorrente contaCorrente);
+        Task<IEnumerable<ContaCorrente>> GetAll(int pageNumber, int pageSize);
     }
 }
 

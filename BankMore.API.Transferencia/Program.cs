@@ -4,12 +4,8 @@ using BankMore.Core.Interfaces;
 using BankMore.Infra.Database;
 using BankMore.Infra.Repositories;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
@@ -43,6 +39,7 @@ builder.Services.AddSingleton<ITransferenciaRepository>(new TransferenciaReposit
 builder.Services.AddSingleton<IContaCorrenteRepository>(new ContaCorrenteRepository(connectionString));
 builder.Services.AddSingleton<IMovimentoRepository>(new MovimentoRepository(connectionString));
 builder.Services.AddSingleton<IIdempotenciaRepository>(new IdempotenciaRepository(connectionString));
+builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? "123as4d56asd45ads465a4s5d6";
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

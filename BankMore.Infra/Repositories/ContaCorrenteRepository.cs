@@ -29,7 +29,7 @@ namespace BankMore.Infra.Repositories
         {
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                return (await connection.QueryFirstOrDefaultAsync<ContaCorrente>("SELECT * FROM ContaCorrente WHERE NumeroConta = @numero", new { numero }))!;
+                return (await connection.QueryFirstOrDefaultAsync<ContaCorrente>("SELECT * FROM ContaCorrente WHERE numeroconta = @numero", new { numero }))!;
             }
         }
 
@@ -45,7 +45,7 @@ namespace BankMore.Infra.Repositories
         {
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                await connection.ExecuteAsync("INSERT INTO ContaCorrente (Id, NumeroConta, Nome, Cpf, Ativo, Senha, Salt, Saldo) VALUES (@Id, @NumeroConta, @Nome, @Cpf, @Ativo, @Senha, @Salt, @Saldo)", contaCorrente);
+                await connection.ExecuteAsync("INSERT INTO ContaCorrente (Id, NumeroConta, Nome, Cpf, Ativa, Senha, Salt, Saldo) VALUES (@Id, @Numero, @Nome, @Cpf, @Ativa, @Senha, @Salt, @Saldo)", contaCorrente);
             }
         }
 
@@ -53,7 +53,16 @@ namespace BankMore.Infra.Repositories
         {
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                await connection.ExecuteAsync("UPDATE ContaCorrente SET Nome = @Nome, Ativo = @Ativo, Senha = @Senha, Salt = @Salt, Saldo = @Saldo WHERE Id = @Id", contaCorrente);
+                await connection.ExecuteAsync("UPDATE ContaCorrente SET Nome = @Nome, Ativa = @Ativo, Senha = @Senha, Salt = @Salt, Saldo = @Saldo WHERE Id = @Id", contaCorrente);
+            }
+        }
+
+        public async Task<IEnumerable<ContaCorrente>> GetAll(int pageNumber, int pageSize)
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                var offset = (pageNumber - 1) * pageSize;
+                return await connection.QueryAsync<ContaCorrente>($"SELECT * FROM ContaCorrente LIMIT {pageSize} OFFSET {offset}");
             }
         }
     }

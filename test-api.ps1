@@ -1,13 +1,10 @@
-$baseUrl = "http://localhost:5000"
-
-
 Write-Host "Criando conta corrente..."
 $createAccountBody = @{
     nome = "Teste Usuario"
     senha = "senha123"
 } | ConvertTo-Json
 
-$createAccountResponse = Invoke-RestMethod -Uri "$baseUrl/contacorrente" -Method Post -Body $createAccountBody -ContentType "application/json"
+$createAccountResponse = Invoke-RestMethod -Uri "http://localhost:5074/contacorrente" -Method Post -Body $createAccountBody -ContentType "application/json"
 Write-Host "Conta criada com número: $($createAccountResponse.numeroConta)"
 
 
@@ -17,7 +14,7 @@ $loginBody = @{
     senha = "senha123"
 } | ConvertTo-Json
 
-$loginResponse = Invoke-RestMethod -Uri "$baseUrl/contacorrente/login" -Method Post -Body $loginBody -ContentType "application/json"
+$loginResponse = Invoke-RestMethod -Uri "http://localhost:5074/contacorrente/login" -Method Post -Body $loginBody -ContentType "application/json"
 Write-Host "Token JWT obtido: $($loginResponse.token)"
 
 
@@ -34,7 +31,7 @@ $depositoBody = @{
     tipoMovimento = "C"
 } | ConvertTo-Json
 
-Invoke-RestMethod -Uri "$baseUrl/contacorrente/movimentacao" -Method Post -Body $depositoBody -ContentType "application/json" -Headers $headers
+Invoke-RestMethod -Uri "http://localhost:5074/contacorrente/movimentacao" -Method Post -Body $depositoBody -ContentType "application/json" -Headers $headers
 Write-Host "Depósito realizado com sucesso!"
 
 
@@ -44,7 +41,7 @@ $createAccount2Body = @{
     senha = "senha456"
 } | ConvertTo-Json
 
-$createAccount2Response = Invoke-RestMethod -Uri "$baseUrl/contacorrente" -Method Post -Body $createAccount2Body -ContentType "application/json"
+$createAccount2Response = Invoke-RestMethod -Uri "http://localhost:5074/contacorrente" -Method Post -Body $createAccount2Body -ContentType "application/json"
 Write-Host "Segunda conta criada com número: $($createAccount2Response.numeroConta)"
 
 
@@ -56,7 +53,7 @@ $transferBody = @{
     valor = 500
 } | ConvertTo-Json
 
-Invoke-RestMethod -Uri "$baseUrl/transferencia" -Method Post -Body $transferBody -ContentType "application/json" -Headers $headers
+Invoke-RestMethod -Uri "http://localhost:5237/transferencia" -Method Post -Body $transferBody -ContentType "application/json" -Headers $headers
 Write-Host "Transferência realizada com sucesso!"
 
 Write-Host "\nTestes concluídos com sucesso!"

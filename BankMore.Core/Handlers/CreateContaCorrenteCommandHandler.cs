@@ -8,10 +8,12 @@ namespace BankMore.Core.Handlers
     public class CreateContaCorrenteCommandHandler : IRequestHandler<CreateContaCorrenteCommand, int>
     {
         private readonly IContaCorrenteRepository _contaCorrenteRepository;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public CreateContaCorrenteCommandHandler(IContaCorrenteRepository contaCorrenteRepository)
+        public CreateContaCorrenteCommandHandler(IContaCorrenteRepository contaCorrenteRepository, IPasswordHasher passwordHasher)
         {
             _contaCorrenteRepository = contaCorrenteRepository;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<int> Handle(CreateContaCorrenteCommand request, CancellationToken cancellationToken)
@@ -26,13 +28,15 @@ namespace BankMore.Core.Handlers
                 throw new ArgumentException("Nome e senha são obrigatórios.");
             }
 
-            var salt = "some-salt";
+            var salt = _passwordHasher.GenerateSalt();
+            request.Senha = _passwordHasher.HashPassword(request.Senha, salt);
+
             var contaCorrente = new ContaCorrente(request.Nome, request.Cpf, request.Senha, salt);
             await _contaCorrenteRepository.Add(contaCorrente);
 
             return contaCorrente.Numero;
         }
-
+        
         private bool IsCpfValid(string cpf)
         {
             int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
