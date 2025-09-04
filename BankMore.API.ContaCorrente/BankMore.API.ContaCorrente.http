@@ -1,0 +1,6 @@
+@BankMore.API.ContaCorrente_HostAddress = http://localhost:5074
+
+GET {{BankMore.API.ContaCorrente_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

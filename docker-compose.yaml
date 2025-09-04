@@ -1,0 +1,55 @@
+
+version: '3.4'
+
+services:
+  db-volume:
+    image: busybox
+    volumes:
+      - db-data:/data
+    command: /bin/true
+
+  contacorrente.api:
+    image: ${DOCKER_REGISTRY-}contacorrenteapi
+    build:
+      context: .
+      dockerfile: BankMore.API.ContaCorrente/Dockerfile
+    ports:
+      - "5074:8080"
+    volumes:
+      - db-data:/app/data
+    environment:
+      - ConnectionString=Data Source=/app/data/bankmore.db
+      - JWT_KEY=bankmore-secure-jwt-key-for-production
+    depends_on:
+      - db-volume
+
+  transferencia.api:
+    image: ${DOCKER_REGISTRY-}transferenciaapi
+    build:
+      context: .
+      dockerfile: BankMore.API.Transferencia/Dockerfile
+    ports:
+      - "5237:8080"
+    volumes:
+      - db-data:/app/data
+    environment:
+      - ConnectionString=Data Source=/app/data/bankmore.db
+      - JWT_KEY=bankmore-secure-jwt-key-for-production
+    depends_on:
+      - db-volume
+      - contacorrente.api
+
+  gateway.api:
+    image: ${DOCKER_REGISTRY-}gatewayapi
+    build:
+      context: .
+      dockerfile: BankMore.API.Gateway/Dockerfile
+    ports:
+      - "5000:8080"
+    depends_on:
+      - contacorrente.api
+      - transferencia.api
+
+volumes:
+  db-data:
+
