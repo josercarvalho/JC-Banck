@@ -37,7 +37,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddMediatR(typeof(BankMore.Core.Handlers.CreateTransferenciaCommandHandler).GetTypeInfo().Assembly);
 
-var connectionString = Environment.GetEnvironmentVariable("ConnectionString") ?? "Data Source=bankmore.db";
+var connectionString = Environment.GetEnvironmentVariable("ConnectionString") ?? "Host=localhost;Port=5432;Database=bankmore;Username=user;Password=password";
 builder.Services.AddSingleton<DatabaseBootstrap>(new DatabaseBootstrap(connectionString));
 builder.Services.AddSingleton<ITransferenciaRepository>(new TransferenciaRepository(connectionString));
 builder.Services.AddSingleton<IContaCorrenteRepository>(new ContaCorrenteRepository(connectionString));

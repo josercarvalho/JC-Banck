@@ -9,7 +9,9 @@ namespace BankMore.Core.Interfaces
     {
         Task<ContaCorrente> GetById(Guid id);
         Task<ContaCorrente> GetByNumero(int numero);
+        Task<ContaCorrente> GetByCpf(string cpf);
         Task Add(ContaCorrente contaCorrente);
         Task Update(ContaCorrente contaCorrente);
     }
 }
+

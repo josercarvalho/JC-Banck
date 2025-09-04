@@ -24,13 +24,18 @@ namespace BankMore.Core.Handlers
         public async Task<string> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
             ContaCorrente? contaCorrente = null;
+
             if (request.NumeroConta.HasValue)
             {
                 contaCorrente = await _contaCorrenteRepository.GetByNumero(request.NumeroConta.Value);
             }
             else if (!string.IsNullOrEmpty(request.Cpf))
             {
-                throw new System.NotImplementedException("Login with CPF is not implemented.");
+                contaCorrente = await _contaCorrenteRepository.GetByCpf(request.Cpf);
+            }
+            else
+            {
+                throw new ArgumentException("Número da conta ou CPF devem ser informados.");
             }
 
             if (contaCorrente == null || contaCorrente.Senha != request.Senha)
@@ -39,7 +44,7 @@ namespace BankMore.Core.Handlers
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? "your-super-secret-key-for-development-only";
+            var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? "123as4d56asd45ads465a4s5d6";
             var key = Encoding.ASCII.GetBytes(jwtKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {

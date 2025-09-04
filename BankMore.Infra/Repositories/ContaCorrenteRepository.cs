@@ -29,7 +29,15 @@ namespace BankMore.Infra.Repositories
         {
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                return (await connection.QueryFirstOrDefaultAsync<ContaCorrente>("SELECT * FROM ContaCorrente WHERE Numero = @numero", new { numero }))!;
+                return (await connection.QueryFirstOrDefaultAsync<ContaCorrente>("SELECT * FROM ContaCorrente WHERE NumeroConta = @numero", new { numero }))!;
+            }
+        }
+
+        public async Task<ContaCorrente> GetByCpf(string cpf)
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                return (await connection.QueryFirstOrDefaultAsync<ContaCorrente>("SELECT * FROM ContaCorrente WHERE Cpf = @cpf", new { cpf }))!;
             }
         }
 
@@ -37,7 +45,7 @@ namespace BankMore.Infra.Repositories
         {
             using (var connection = new NpgsqlConnection(_connectionString))
             {
-                await connection.ExecuteAsync("INSERT INTO ContaCorrente (Id, Numero, Nome, Ativo, Senha, Salt, Saldo) VALUES (@Id, @Numero, @Nome, @Ativo, @Senha, @Salt, @Saldo)", contaCorrente);
+                await connection.ExecuteAsync("INSERT INTO ContaCorrente (Id, NumeroConta, Nome, Cpf, Ativo, Senha, Salt, Saldo) VALUES (@Id, @NumeroConta, @Nome, @Cpf, @Ativo, @Senha, @Salt, @Saldo)", contaCorrente);
             }
         }
 

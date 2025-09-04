@@ -8,15 +8,17 @@ namespace BankMore.Core.Entities
     {
         public int Numero { get; private set; }
         public string Nome { get; private set; }
+        public string CPF { get; private set; }
         public bool Ativo { get; private set; }
         public string Senha { get; private set; }
         public string Salt { get; private set; }
         public decimal Saldo { get; private set; }
 
-        public ContaCorrente(string nome, string senha, string salt)
+        public ContaCorrente(string nome, string cpf, string senha, string salt)
         {
             Numero = new Random().Next(10000, 99999);
             Nome = nome;
+            CPF = cpf;
             Ativo = true;
             Senha = senha;
             Salt = salt;

@@ -1,11 +1,12 @@
-CREATE TABLE IF NOT EXISTS ContaCorrente (
+CREATE TABLE ContaCorrente (
     Id UUID PRIMARY KEY,
-    Numero INT,
+    NumeroConta VARCHAR(20) NOT NULL UNIQUE,
     Nome VARCHAR(100),
-    Ativo BOOLEAN,
-    Senha TEXT,
-    Salt TEXT,
-    Saldo DECIMAL(18, 2)
+    CPF VARCHAR(14) NOT NULL UNIQUE,
+    Saldo DECIMAL(18, 2) NOT NULL,
+    Ativa BOOLEAN NOT NULL,
+    DataCriacao TIMESTAMP NOT NULL,
+    DataAtualizacao TIMESTAMP NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Movimento (

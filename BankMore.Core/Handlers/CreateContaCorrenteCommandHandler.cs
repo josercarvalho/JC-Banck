@@ -27,7 +27,7 @@ namespace BankMore.Core.Handlers
             }
 
             var salt = "some-salt";
-            var contaCorrente = new ContaCorrente(request.Nome, request.Senha, salt);
+            var contaCorrente = new ContaCorrente(request.Nome, request.Cpf, request.Senha, salt);
             await _contaCorrenteRepository.Add(contaCorrente);
 
             return contaCorrente.Numero;
