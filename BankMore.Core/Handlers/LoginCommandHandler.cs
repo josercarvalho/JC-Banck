@@ -24,9 +24,9 @@ namespace BankMore.Core.Handlers
         {
             ContaCorrente? contaCorrente = null;
 
-            if (request.NumeroConta.HasValue)
+            if (!string.IsNullOrEmpty(request.NumeroConta))
             {
-                contaCorrente = await _contaCorrenteRepository.GetByNumero(request.NumeroConta.Value);
+                contaCorrente = await _contaCorrenteRepository.GetByNumero(request.NumeroConta);
             }
             else if (!string.IsNullOrEmpty(request.Cpf))
             {

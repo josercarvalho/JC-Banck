@@ -5,6 +5,8 @@ CREATE TABLE ContaCorrente (
     CPF VARCHAR(14) NOT NULL UNIQUE,
     Saldo DECIMAL(18, 2) NOT NULL,
     Ativa BOOLEAN NOT NULL,
+    Senha VARCHAR(100) NOT NULL, 
+    Salt VARCHAR(100) NOT NULL,
     DataCriacao TIMESTAMP NOT NULL,
     DataAtualizacao TIMESTAMP NOT NULL
 );

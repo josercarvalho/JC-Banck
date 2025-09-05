@@ -1,24 +1,23 @@
 
 using BankMore.Core.Entities;
 using BankMore.Core.Interfaces;
+using BankMore.Infra.Database;
 using Dapper;
-using Npgsql;
-using System.Threading.Tasks;
 
 namespace BankMore.Infra.Repositories
 {
     public class TransferenciaRepository : ITransferenciaRepository
     {
-        private readonly string _connectionString;
+        private readonly DbConnectionFactory _connectionFactory;
 
-        public TransferenciaRepository(string connectionString)
+        public TransferenciaRepository(DbConnectionFactory connectionFactory)
         {
-            _connectionString = connectionString;
+            _connectionFactory = connectionFactory;
         }
 
         public async Task Add(Transferencia transferencia)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = _connectionFactory.CreateConnection())
             {
                 await connection.ExecuteAsync("INSERT INTO Transferencia (Id, IdContaCorrenteOrigem, IdContaCorrenteDestino, DataTransferencia, Valor) VALUES (@Id, @IdContaCorrenteOrigem, @IdContaCorrenteDestino, @DataTransferencia, @Valor)", transferencia);
             }

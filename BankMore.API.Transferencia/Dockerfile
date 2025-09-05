@@ -4,7 +4,6 @@ WORKDIR /src
 COPY ["BankMore.sln", "./"]
 COPY ["BankMore.API.ContaCorrente/BankMore.API.ContaCorrente.csproj", "./BankMore.API.ContaCorrente/"]
 COPY ["BankMore.API.Transferencia/BankMore.API.Transferencia.csproj", "./BankMore.API.Transferencia/"]
-COPY ["BankMore.API.Gateway/BankMore.API.Gateway.csproj", "./BankMore.API.Gateway/"]
 COPY ["BankMore.Core/BankMore.Core.csproj", "./BankMore.Core/"]
 COPY ["BankMore.Infra/BankMore.Infra.csproj", "./BankMore.Infra/"]
 COPY ["BankMore.Tests/BankMore.Tests.csproj", "./BankMore.Tests/"]

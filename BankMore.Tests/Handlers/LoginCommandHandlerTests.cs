@@ -20,13 +20,13 @@ namespace BankMore.Tests.Handlers
             var passwordHasherMock = new Mock<IPasswordHasher>();
             passwordHasherMock.Setup(ph => ph.VerifyPassword(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(true);
             var contaCorrente = new ContaCorrente("Test User", "password123", "salt", "test_salt");
-            contaCorrenteRepositoryMock.Setup(r => r.GetByNumero(It.IsAny<int>()))
+            contaCorrenteRepositoryMock.Setup(r => r.GetByNumero(It.IsAny<string>()))
                 .ReturnsAsync(contaCorrente);
 
             var handler = new LoginCommandHandler(contaCorrenteRepositoryMock.Object, passwordHasherMock.Object);
             var command = new LoginCommand
             {
-                NumeroConta = contaCorrente.Numero,
+                NumeroConta = contaCorrente.Numero.ToString(),
                 Senha = "password123"
             };
 
@@ -41,13 +41,13 @@ namespace BankMore.Tests.Handlers
             var contaCorrenteRepositoryMock = new Mock<IContaCorrenteRepository>();
             var passwordHasherMock = new Mock<IPasswordHasher>();
             passwordHasherMock.Setup(ph => ph.VerifyPassword(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(true);
-            contaCorrenteRepositoryMock.Setup(r => r.GetByNumero(It.IsAny<int>()))
+            contaCorrenteRepositoryMock.Setup(r => r.GetByNumero(It.IsAny<string>()))
                 .ReturnsAsync((ContaCorrente)null);
 
             var handler = new LoginCommandHandler(contaCorrenteRepositoryMock.Object, passwordHasherMock.Object);
             var command = new LoginCommand
             {
-                NumeroConta = 12345,
+                NumeroConta = "12345",
                 Senha = "wrongpassword"
             };
 
@@ -61,13 +61,13 @@ namespace BankMore.Tests.Handlers
             var passwordHasherMock = new Mock<IPasswordHasher>();
             passwordHasherMock.Setup(ph => ph.VerifyPassword(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(false);
             var contaCorrente = new ContaCorrente("Test User", "password123", "salt", "test_salt");
-            contaCorrenteRepositoryMock.Setup(r => r.GetByNumero(It.IsAny<int>()))
+            contaCorrenteRepositoryMock.Setup(r => r.GetByNumero(It.IsAny<string>()))
                 .ReturnsAsync(contaCorrente);
 
             var handler = new LoginCommandHandler(contaCorrenteRepositoryMock.Object, passwordHasherMock.Object);
             var command = new LoginCommand
             {
-                NumeroConta = contaCorrente.Numero,
+                NumeroConta = contaCorrente.Numero.ToString(),
                 Senha = "wrongpassword"
             };
 

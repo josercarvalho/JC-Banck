@@ -19,7 +19,8 @@ namespace BankMore.Core.Commands.Validators
             When(c => string.IsNullOrEmpty(c.Cpf), () =>
             {
                 RuleFor(c => c.NumeroConta)
-                    .NotNull().WithMessage("O número da conta é obrigatório se o CPF não for informado.");
+                    .NotEmpty().WithMessage("O número da conta é obrigatório se o CPF não for informado.")
+                    .Length(1, 20).WithMessage("O número da conta deve ter entre 1 e 20 caracteres.");
             });
         }
     }

@@ -72,15 +72,22 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddMediatR(typeof(BankMore.Core.Handlers.CreateTransferenciaCommandHandler).GetTypeInfo().Assembly);
 
-var connectionString = Environment.GetEnvironmentVariable("ConnectionString") ?? "Host=localhost;Port=5432;Database=bankmore;Username=user;Password=password";
-builder.Services.AddSingleton<DatabaseBootstrap>(new DatabaseBootstrap(connectionString));
-builder.Services.AddSingleton<ITransferenciaRepository>(new TransferenciaRepository(connectionString));
-builder.Services.AddSingleton<IContaCorrenteRepository>(new ContaCorrenteRepository(connectionString));
-builder.Services.AddSingleton<IMovimentoRepository>(new MovimentoRepository(connectionString));
-builder.Services.AddSingleton<IIdempotenciaRepository>(new IdempotenciaRepository(connectionString));
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("Connection string 'DefaultConnection' não está configurada.");
+}
+
+builder.Services.AddSingleton(new DbConnectionFactory(connectionString));
+builder.Services.AddSingleton<DatabaseBootstrap>();
+builder.Services.AddSingleton<ITransferenciaRepository, TransferenciaRepository>();
+builder.Services.AddSingleton<IContaCorrenteRepository, ContaCorrenteRepository>();
+builder.Services.AddSingleton<IMovimentoRepository, MovimentoRepository>();
+builder.Services.AddSingleton<IIdempotenciaRepository, IdempotenciaRepository>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
-var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY") ?? "123as4d56asd45ads465a4s5d6";
+var jwtKey = builder.Configuration["JwtSettings:Secret"] ?? "WW91clN1cGVyU2VjcmV0S2V5Rm9ySnd0VG9rZW5HZW5lcmF0aW9uVGhhdFNob3VsZEJlQXRMZWFzdDMyQnl0ZXNMb25n";
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

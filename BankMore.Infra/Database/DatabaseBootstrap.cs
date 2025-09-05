@@ -1,18 +1,15 @@
 
 using Dapper;
-using Npgsql;
-using System;
-using System.Threading;
 
 namespace BankMore.Infra.Database
 {
     public class DatabaseBootstrap
     {
-        private readonly string _connectionString;
+        private readonly DbConnectionFactory _connectionFactory;
 
-        public DatabaseBootstrap(string connectionString)
+        public DatabaseBootstrap(DbConnectionFactory connectionFactory)
         {
-            _connectionString = connectionString;
+            _connectionFactory = connectionFactory;
         }
 
         public void Setup()
@@ -24,7 +21,7 @@ namespace BankMore.Infra.Database
             {
                 try
                 {
-                    using (var connection = new NpgsqlConnection(_connectionString))
+                    using (var connection = _connectionFactory.CreateConnection())
                     {
                         connection.Open();
 
@@ -36,7 +33,7 @@ namespace BankMore.Infra.Database
                         return;
                     }
                 }
-                catch (Npgsql.NpgsqlException ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine($"Attempt {i + 1} of {maxRetries} failed to connect to database: {ex.Message}");
                     if (i < maxRetries - 1)

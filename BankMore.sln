@@ -13,8 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMore.API.Transferencia"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMore.Tests", "BankMore.Tests\BankMore.Tests.csproj", "{F3B206C5-B662-4462-A2B2-50DE0D6B882C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankMore.API.Gateway", "BankMore.API.Gateway\BankMore.API.Gateway.csproj", "{1974ADCF-D494-4E5E-A22B-D048D766701E}"
-EndProject
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,18 +84,7 @@ Global
 		{F3B206C5-B662-4462-A2B2-50DE0D6B882C}.Release|x64.Build.0 = Release|Any CPU
 		{F3B206C5-B662-4462-A2B2-50DE0D6B882C}.Release|x86.ActiveCfg = Release|Any CPU
 		{F3B206C5-B662-4462-A2B2-50DE0D6B882C}.Release|x86.Build.0 = Release|Any CPU
-		{1974ADCF-D494-4E5E-A22B-D048D766701E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1974ADCF-D494-4E5E-A22B-D048D766701E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1974ADCF-D494-4E5E-A22B-D048D766701E}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{1974ADCF-D494-4E5E-A22B-D048D766701E}.Debug|x64.Build.0 = Debug|Any CPU
-		{1974ADCF-D494-4E5E-A22B-D048D766701E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1974ADCF-D494-4E5E-A22B-D048D766701E}.Debug|x86.Build.0 = Debug|Any CPU
-		{1974ADCF-D494-4E5E-A22B-D048D766701E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1974ADCF-D494-4E5E-A22B-D048D766701E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1974ADCF-D494-4E5E-A22B-D048D766701E}.Release|x64.ActiveCfg = Release|Any CPU
-		{1974ADCF-D494-4E5E-A22B-D048D766701E}.Release|x64.Build.0 = Release|Any CPU
-		{1974ADCF-D494-4E5E-A22B-D048D766701E}.Release|x86.ActiveCfg = Release|Any CPU
-		{1974ADCF-D494-4E5E-A22B-D048D766701E}.Release|x86.Build.0 = Release|Any CPU
+		
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

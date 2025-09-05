@@ -1,57 +1,54 @@
 using BankMore.Core.Entities;
 using BankMore.Core.Interfaces;
+using BankMore.Infra.Database;
 using Dapper;
-using Npgsql;
-
-using System;
-using System.Threading.Tasks;
 
 namespace BankMore.Infra.Repositories
 {
     public class ContaCorrenteRepository : IContaCorrenteRepository
     {
-        private readonly string _connectionString;
+        private readonly DbConnectionFactory _connectionFactory;
 
-        public ContaCorrenteRepository(string connectionString)
+        public ContaCorrenteRepository(DbConnectionFactory connectionFactory)
         {
-            _connectionString = connectionString;
+            _connectionFactory = connectionFactory;
         }
 
         public async Task<ContaCorrente> GetById(Guid id)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = _connectionFactory.CreateConnection())
             {
-                return (await connection.QueryFirstOrDefaultAsync<ContaCorrente>("SELECT * FROM ContaCorrente WHERE Id = @id", new { id }))!;
+                return (await connection.QueryFirstOrDefaultAsync<ContaCorrente>("SELECT * FROM ContaCorrente WHERE Id = @id", new { Id = id }))!;
             }
         }
 
-        public async Task<ContaCorrente> GetByNumero(int numero)
+        public async Task<ContaCorrente> GetByNumero(string numero)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = _connectionFactory.CreateConnection())
             {
-                return (await connection.QueryFirstOrDefaultAsync<ContaCorrente>("SELECT * FROM ContaCorrente WHERE numeroconta = @numero", new { numero }))!;
+                return (await connection.QueryFirstOrDefaultAsync<ContaCorrente>("SELECT * FROM ContaCorrente WHERE numeroconta = @numeroconta", new { NumeroConta = numero }))!;
             }
         }
 
         public async Task<ContaCorrente> GetByCpf(string cpf)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = _connectionFactory.CreateConnection())
             {
-                return (await connection.QueryFirstOrDefaultAsync<ContaCorrente>("SELECT * FROM ContaCorrente WHERE Cpf = @cpf", new { cpf }))!;
+                return (await connection.QueryFirstOrDefaultAsync<ContaCorrente>("SELECT * FROM ContaCorrente WHERE Cpf = @cpf", new { Cpf = cpf }))!;
             }
         }
 
         public async Task Add(ContaCorrente contaCorrente)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = _connectionFactory.CreateConnection())
             {
-                await connection.ExecuteAsync("INSERT INTO ContaCorrente (Id, NumeroConta, Nome, Cpf, Ativa, Senha, Salt, Saldo) VALUES (@Id, @Numero, @Nome, @Cpf, @Ativa, @Senha, @Salt, @Saldo)", contaCorrente);
+                await connection.ExecuteAsync("INSERT INTO ContaCorrente (Id, NumeroConta, Nome, Cpf, Ativa, Senha, Salt, Saldo, DataCriacao, DataAtualizacao) VALUES (@Id, @Numero, @Nome, @Cpf, @Ativo, @Senha, @Salt, @Saldo, @DataCriacao, @DataAtualizacao)", contaCorrente);
             }
         }
 
         public async Task Update(ContaCorrente contaCorrente)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = _connectionFactory.CreateConnection())
             {
                 await connection.ExecuteAsync("UPDATE ContaCorrente SET Nome = @Nome, Ativa = @Ativo, Senha = @Senha, Salt = @Salt, Saldo = @Saldo WHERE Id = @Id", contaCorrente);
             }
@@ -59,7 +56,7 @@ namespace BankMore.Infra.Repositories
 
         public async Task<IEnumerable<ContaCorrente>> GetAll(int pageNumber, int pageSize)
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = _connectionFactory.CreateConnection())
             {
                 var offset = (pageNumber - 1) * pageSize;
                 return await connection.QueryAsync<ContaCorrente>($"SELECT * FROM ContaCorrente LIMIT {pageSize} OFFSET {offset}");

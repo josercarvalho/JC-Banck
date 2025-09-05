@@ -1,6 +1,0 @@
-@BankMore.API.Gateway_HostAddress = http://localhost:5128
-
-GET {{BankMore.API.Gateway_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
